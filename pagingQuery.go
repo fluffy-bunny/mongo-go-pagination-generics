@@ -73,16 +73,17 @@ func (paging *pagingQuery[T]) Select(selector interface{}) PagingQuery[T] {
 	paging.internal.Select(selector)
 	return paging
 }
-func (paging *pagingQuery[T]) Aggregate(criteria ...interface{}) (records []T, paginatedData *base.PaginatedData, err error) {
-	paginatedData, err = paging.internal.Aggregate(criteria...)
+func (paging *pagingQuery[T]) Aggregate(criteria ...interface{}) (records []T, aggPaginatedData *base.PaginatedData, err error) {
+	aggPaginatedData, err = paging.internal.Aggregate(criteria...)
 	if err != nil {
 		return
 	}
-	var aggList []T
-	for _, raw := range paginatedData.Data {
-		var record *T
-		if marshallErr := bson.Unmarshal(raw, &record); marshallErr == nil {
-			aggList = append(aggList, *record)
+
+	for _, raw := range aggPaginatedData.Data {
+		record := new(T)
+		marshallErr := bson.Unmarshal(raw, record)
+		if marshallErr == nil {
+			records = append(records, *record)
 		}
 	}
 	return

@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  mongodb:
+    image: "bitnami/mongodb:4.4.13-debian-10-r31"
+    container_name: "mongodb"
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/bitnami/mongodb
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+volumes:
+  mongodb-data:
